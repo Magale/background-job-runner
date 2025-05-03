@@ -1,7 +1,11 @@
 <?php
-namespace App\Jobs;
-class SampleJob {
-    public function run($param1, $param2) {
-        // ... sample logic
+
+namespace Jobs;
+
+class SampleJob
+{
+    public function execute($a, $b)
+    {
+        echo "Executing SampleJob with parameters: $a and $b\n";
     }
 }
