@@ -23,7 +23,6 @@ try {
     // Log job start
     $log->info("Running job: $class::$method", ['params' => $params]);
 
-    // Ensure class exists with the correct namespace
     $class = "Jobs\\" . $class;  // Add the Jobs namespace dynamically
     if (!class_exists($class)) {
         throw new Exception("Class $class does not exist.");
@@ -31,7 +30,6 @@ try {
 
     $instance = new $class();
 
-    // Ensure the method exists
     if (!method_exists($instance, $method)) {
         throw new Exception("Method $method does not exist in class $class.");
     }
