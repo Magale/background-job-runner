@@ -20,24 +20,31 @@ try {
         throw new Exception("Class and method must be specified.");
     }
 
+    // Log job start
     $log->info("Running job: $class::$method", ['params' => $params]);
 
+    // Ensure class exists with the correct namespace
+    $class = "Jobs\\" . $class;  // Add the Jobs namespace dynamically
     if (!class_exists($class)) {
         throw new Exception("Class $class does not exist.");
     }
 
-    $instance = new $class;
+    $instance = new $class();
 
+    // Ensure the method exists
     if (!method_exists($instance, $method)) {
         throw new Exception("Method $method does not exist in class $class.");
     }
 
+    // Call the method with parameters
     call_user_func_array([$instance, $method], $params);
 
+    // Log job completion
     $log->info("Job completed: $class::$method");
     echo "Job executed successfully.\n";
 
 } catch (Throwable $e) {
+    // Log errors
     $log->error("Job failed", [
         'error' => $e->getMessage(),
         'trace' => $e->getTraceAsString()

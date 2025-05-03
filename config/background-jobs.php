@@ -1,2 +1,5 @@
 <?php
-return [ 'App\\Jobs\\SampleJob' => ['run'] ];
+
+return [
+    'Jobs\\SampleJob' => ['execute'],
+];
