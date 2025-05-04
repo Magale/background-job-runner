@@ -12,19 +12,26 @@ $errorLog = new StreamHandler(__DIR__ . '/storage/logs/background_jobs_errors.lo
 $log->pushHandler($errorLog);
 
 try {
-    $class = $argv[1] ?? null;
+    $inputClass = $argv[1] ?? null;
     $method = $argv[2] ?? null;
     $params = array_slice($argv, 3);
 
-    if (!$class || !$method) {
+    if (!$inputClass || !$method) {
         throw new Exception("Class and method must be specified.");
+    }
+
+    $class = "Jobs\\" . $inputClass;
+
+    // Load approved jobs list
+    $approvedJobs = require __DIR__ . '/config/background-jobs.php';
+
+    // Validate class and method against the approved list
+    if (!isset($approvedJobs[$class]) || !in_array($method, $approvedJobs[$class])) {
+        throw new Exception("Execution of $class::$method is not approved.");
     }
 
     // Log job start
     $log->info("Running job: $class::$method", ['params' => $params]);
-
-    $class = "Jobs\\" . $class;  // Add the Jobs namespace dynamically
-    //print_r(get_declared_classes());
 
     if (!class_exists($class)) {
         throw new Exception("Class $class does not exist.");
