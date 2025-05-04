@@ -15,4 +15,4 @@ This project provides a custom system to run PHP background jobs outside of Lara
 ### Run a Job via CLI
 
 ```bash
-php run-job.php SampleJob execute "param1,param2"
+php run-job.php SampleJob execute "param1" "param2"
