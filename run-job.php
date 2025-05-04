@@ -24,6 +24,8 @@ try {
     $log->info("Running job: $class::$method", ['params' => $params]);
 
     $class = "Jobs\\" . $class;  // Add the Jobs namespace dynamically
+    //print_r(get_declared_classes());
+
     if (!class_exists($class)) {
         throw new Exception("Class $class does not exist.");
     }

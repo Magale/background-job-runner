@@ -1,5 +1,4 @@
-// File: Jobs/SampleJob.php
-
+<?php
 namespace Jobs;
 
 class SampleJob
