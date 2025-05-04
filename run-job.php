@@ -12,25 +12,24 @@ $errorLog = new StreamHandler(__DIR__ . '/storage/logs/background_jobs_errors.lo
 $log->pushHandler($errorLog);
 
 try {
-    $inputClass = $argv[1] ?? null;
+    $class = $argv[1] ?? null;
     $method = $argv[2] ?? null;
     $params = array_slice($argv, 3);
 
-    if (!$inputClass || !$method) {
+    if (!$class || !$method) {
         throw new Exception("Class and method must be specified.");
     }
 
-    $class = "Jobs\\" . $inputClass;
+    $class = "Jobs\\" . $class;
 
-    // Load approved jobs list
-    $approvedJobs = require __DIR__ . '/config/background-jobs.php';
+    // Load allowed job configuration
+    $allowedJobs = require __DIR__ . '/config/background-jobs.php';
 
-    // Validate class and method against the approved list
-    if (!isset($approvedJobs[$class]) || !in_array($method, $approvedJobs[$class])) {
-        throw new Exception("Execution of $class::$method is not approved.");
+    // Security check: only allow approved classes and methods
+    if (!isset($allowedJobs[$class]) || !in_array($method, $allowedJobs[$class])) {
+        throw new Exception("Execution of $class::$method is not allowed.");
     }
 
-    // Log job start
     $log->info("Running job: $class::$method", ['params' => $params]);
 
     if (!class_exists($class)) {
@@ -43,15 +42,12 @@ try {
         throw new Exception("Method $method does not exist in class $class.");
     }
 
-    // Call the method with parameters
     call_user_func_array([$instance, $method], $params);
 
-    // Log job completion
     $log->info("Job completed: $class::$method");
     echo "Job executed successfully.\n";
 
 } catch (Throwable $e) {
-    // Log errors
     $log->error("Job failed", [
         'error' => $e->getMessage(),
         'trace' => $e->getTraceAsString()
