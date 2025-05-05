@@ -20,7 +20,7 @@ This project provides a custom system to run PHP background jobs outside of Lara
 
 1. Clone the repository:
    ```bash
-   git clone https://your-repository-url.git
+   git clone https://github.com/Magale/background-job-runner.git
    cd background-job-runner
    ```
 2. Install dependencies:
